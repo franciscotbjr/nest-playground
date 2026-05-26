@@ -1,12 +1,15 @@
 import { NestFactory } from '@nestjs/core';
+import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
-import 'dotenv/config'
-import { drizzle } from 'drizzle-orm/node-postgres';
-
-const db = drizzle(process.env.DATABASE_URL!);
+import 'dotenv/config';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  const port = Number(process.env.PORT ?? 3000);
+  const host = process.env.HOST ?? '127.0.0.1';
+  await app.listen(port, host);
+  logger.log(`Listening on http://${host}:${port}`);
+  logger.log(`MCP endpoint: http://${host}:${port}/mcp`);
 }
-bootstrap();
+void bootstrap();
