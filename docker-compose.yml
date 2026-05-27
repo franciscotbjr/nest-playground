@@ -52,6 +52,27 @@ services:
       - nest-network
     restart: unless-stopped
 
+  # ─────────────────────────────────────────
+  # Seed: insere dados iniciais (executado sob demanda)
+  # ─────────────────────────────────────────
+  seed:
+    image: postgres:16-alpine
+    container_name: nest-playground-seed
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./db/seed.sql:/seed.sql:ro
+    entrypoint:
+      - sh
+      - -c
+      - |
+        echo "Running seed..."
+        psql "postgresql://postgres:example@postgres:5432/nest_playground" -f /seed.sql
+        echo "Seed complete."
+    networks:
+      - nest-network
+
 volumes:
   postgres_data:
     name: nest-playground-postgres-data

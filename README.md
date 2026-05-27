@@ -87,6 +87,20 @@ To stop the containers:
 $ docker compose down
 ```
 
+### Database setup
+
+The first time you start the stack, you need to apply migrations and seed sample data:
+
+```bash
+# Apply Drizzle migrations (creates the tables)
+$ npm run docker:migrate
+
+# Insert sample data (users, posts, postReads)
+$ docker compose run --rm seed
+```
+
+The seed is idempotent — you can run it multiple times without creating duplicate records.
+
 ### Production
 
 Build and run a lean production image (compiled JavaScript only, no devDependencies):
