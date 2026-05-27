@@ -17,7 +17,14 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f api",
+    "docker:build": "docker compose build",
+    "docker:generate": "docker compose exec api npx drizzle-kit generate",
+    "docker:migrate": "docker compose exec api npx drizzle-kit migrate",
+    "docker:setup": "npm run docker:generate && npm run docker:migrate"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

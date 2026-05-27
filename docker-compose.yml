@@ -1,0 +1,62 @@
+name: nest-playground
+
+services:
+
+  # ─────────────────────────────────────────
+  # API NestJS (development com hot-reload)
+  # ─────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: nest-playground-api
+    env_file:
+      - .env.docker
+    ports:
+      - "3000:3000"
+    volumes:
+      # Monta o código-fonte do host dentro do container (hot-reload)
+      - .:/app
+      # Volume anônimo para preservar o node_modules do container,
+      # evitando que o bind mount do host sobreescreva com node_modules vazio
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nest-network
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # PostgreSQL 16
+  # ─────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: nest-playground-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: nest_playground
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nest_playground"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - nest-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: nest-playground-postgres-data
+
+networks:
+  nest-network:
+    name: nest-playground-network
+    driver: bridge

@@ -1,0 +1,35 @@
+node_modules
+dist
+build
+coverage
+.nyc_output
+
+# Ambiente
+.env
+.env.*
+!.env.docker
+
+# VCS
+.git
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Sistema operacional
+.DS_Store
+
+# IDEs
+.vscode
+.idea
+
+# Temporários
+.temp
+.tmp
+*.pid
+*.pid.lock
+
+# TypeScript incremental
+tsconfig.tsbuildinfo
+*.tsbuildinfo
