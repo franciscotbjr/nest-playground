@@ -57,6 +57,54 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Running with Docker
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/) (included with Docker Desktop)
+
+### Development (hot-reload)
+
+The simplest way to run the full stack (NestJS API + PostgreSQL) with live-reload during development:
+
+```bash
+# Copy the Docker environment file and adjust if needed
+$ cp .env.docker .env
+
+# Start both api and postgres services
+$ docker compose up -d
+
+# Watch logs
+$ docker compose logs -f api
+```
+
+The API will be available at [http://localhost:3000](http://localhost:3000). Source code is mounted as a volume, so changes on the host are reflected immediately inside the container.
+
+To stop the containers:
+
+```bash
+$ docker compose down
+```
+
+### Production
+
+Build and run a lean production image (compiled JavaScript only, no devDependencies):
+
+```bash
+$ docker build --target production -t nest-playground:latest .
+$ docker run -p 3000:3000 --env-file .env.docker nest-playground:latest
+```
+
+### Services
+
+| Service    | Container Name            | Port  |
+|------------|---------------------------|-------|
+| NestJS API | nest-playground-api       | 3000  |
+| PostgreSQL | nest-playground-postgres  | 5432  |
+
+The PostgreSQL container includes a health check, and the API waits for the database to be ready before starting.
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
